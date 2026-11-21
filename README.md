@@ -1,4 +1,4 @@
-# twitch-spike-clipper
+# Spike-Clipper
 
 Turn multi-hour Twitch VODs into vertical or widescreen highlight clips by reading chat velocity spikes first - before downloading a single megabyte of video.
 
@@ -27,7 +27,7 @@ Twitch VOD URL
 
 Most auto-clipping tools either lock basic exports behind a $20/month subscription or waste bandwidth downloading an entire 30 GB VOD just to scan audio levels. On Twitch, chat is a better highlight detector anyway. When something funny or ridiculous happens on stream, chat explodes with `KEKW`, `OMEGALUL`, `POG`, or `CLIP IT` roughly 6 to 10 seconds later.
 
-`twitch-spike-clipper` pulls the chat log first, finds the statistical outliers, shifts the timestamps backward to catch the actual setup, and downloads only the 25-to-35 second slices you decide to export. Everything runs locally on your machine with zero API keys or watermarks.
+`Spike-Clipper` pulls the chat log first, finds the statistical outliers, shifts the timestamps backward to catch the actual setup, and downloads only the 25-to-35 second slices you decide to export. Everything runs locally on your machine with zero API keys or watermarks.
 
 ## Features
 
@@ -47,8 +47,8 @@ Most auto-clipping tools either lock basic exports behind a $20/month subscripti
 
 1. **Clone the repository and enter the folder:**
    ```powershell
-   git clone https://github.com/YOUR_USERNAME/twitch-spike-clipper.git
-   cd twitch-spike-clipper
+   git clone https://github.com/ZEB3Z/Spike-Clipper.git
+   cd Spike-Clipper
    ```
 
 2. **Install FFmpeg and fetch `TwitchDownloaderCLI.exe`:**
