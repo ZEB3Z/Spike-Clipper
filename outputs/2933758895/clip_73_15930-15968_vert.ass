@@ -1,0 +1,99 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+WrapStyle: 0
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Arial,76,&H00FFFFFF,&H0000FFFF,&H00000000,&H96000000,-1,0,0,0,100,100,0,0,1,4,2,2,40,40,340,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:08.66,0:00:09.04,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}BRO,{\c&H00FFFFFF&\fscx100\fscy100} THIS IS PETE!
+Dialogue: 0,0:00:09.04,0:00:09.16,Default,,0,0,0,,BRO, {\c&H0000FFFF&\fscx108\fscy108}THIS{\c&H00FFFFFF&\fscx100\fscy100} IS PETE!
+Dialogue: 0,0:00:09.16,0:00:09.36,Default,,0,0,0,,BRO, THIS {\c&H0000FFFF&\fscx108\fscy108}IS{\c&H00FFFFFF&\fscx100\fscy100} PETE!
+Dialogue: 0,0:00:09.36,0:00:09.78,Default,,0,0,0,,BRO, THIS IS {\c&H0000FFFF&\fscx108\fscy108}PETE!{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:09.74,0:00:09.88,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}I'M{\c&H00FFFFFF&\fscx100\fscy100} COMING TO THE
+Dialogue: 0,0:00:09.88,0:00:09.98,Default,,0,0,0,,I'M {\c&H0000FFFF&\fscx108\fscy108}COMING{\c&H00FFFFFF&\fscx100\fscy100} TO THE
+Dialogue: 0,0:00:09.98,0:00:10.10,Default,,0,0,0,,I'M COMING {\c&H0000FFFF&\fscx108\fscy108}TO{\c&H00FFFFFF&\fscx100\fscy100} THE
+Dialogue: 0,0:00:10.10,0:00:10.38,Default,,0,0,0,,I'M COMING TO {\c&H0000FFFF&\fscx108\fscy108}THE{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:10.26,0:00:10.40,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}SIDE{\c&H00FFFFFF&\fscx100\fscy100} OF THE HILL,
+Dialogue: 0,0:00:10.40,0:00:10.54,Default,,0,0,0,,SIDE {\c&H0000FFFF&\fscx108\fscy108}OF{\c&H00FFFFFF&\fscx100\fscy100} THE HILL,
+Dialogue: 0,0:00:10.54,0:00:10.62,Default,,0,0,0,,SIDE OF {\c&H0000FFFF&\fscx108\fscy108}THE{\c&H00FFFFFF&\fscx100\fscy100} HILL,
+Dialogue: 0,0:00:10.62,0:00:10.84,Default,,0,0,0,,SIDE OF THE {\c&H0000FFFF&\fscx108\fscy108}HILL,{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:10.88,0:00:16.92,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}OKAY.{\c&H00FFFFFF&\fscx100\fscy100} THIS IS THE
+Dialogue: 0,0:00:16.92,0:00:17.24,Default,,0,0,0,,OKAY. {\c&H0000FFFF&\fscx108\fscy108}THIS{\c&H00FFFFFF&\fscx100\fscy100} IS THE
+Dialogue: 0,0:00:17.24,0:00:17.34,Default,,0,0,0,,OKAY. THIS {\c&H0000FFFF&\fscx108\fscy108}IS{\c&H00FFFFFF&\fscx100\fscy100} THE
+Dialogue: 0,0:00:17.34,0:00:17.54,Default,,0,0,0,,OKAY. THIS IS {\c&H0000FFFF&\fscx108\fscy108}THE{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:17.40,0:00:17.56,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}BEST{\c&H00FFFFFF&\fscx100\fscy100} GAME ALL TIME.
+Dialogue: 0,0:00:17.56,0:00:17.74,Default,,0,0,0,,BEST {\c&H0000FFFF&\fscx108\fscy108}GAME{\c&H00FFFFFF&\fscx100\fscy100} ALL TIME.
+Dialogue: 0,0:00:17.74,0:00:17.94,Default,,0,0,0,,BEST GAME {\c&H0000FFFF&\fscx108\fscy108}ALL{\c&H00FFFFFF&\fscx100\fscy100} TIME.
+Dialogue: 0,0:00:17.94,0:00:18.20,Default,,0,0,0,,BEST GAME ALL {\c&H0000FFFF&\fscx108\fscy108}TIME.{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:20.64,0:00:20.96,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}THIS{\c&H00FFFFFF&\fscx100\fscy100} IS THE BEST
+Dialogue: 0,0:00:20.96,0:00:21.04,Default,,0,0,0,,THIS {\c&H0000FFFF&\fscx108\fscy108}IS{\c&H00FFFFFF&\fscx100\fscy100} THE BEST
+Dialogue: 0,0:00:21.02,0:00:21.10,Default,,0,0,0,,THIS IS {\c&H0000FFFF&\fscx108\fscy108}THE{\c&H00FFFFFF&\fscx100\fscy100} BEST
+Dialogue: 0,0:00:21.08,0:00:21.36,Default,,0,0,0,,THIS IS THE {\c&H0000FFFF&\fscx108\fscy108}BEST{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:21.24,0:00:21.40,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}GAME{\c&H00FFFFFF&\fscx100\fscy100} ALL TIME.
+Dialogue: 0,0:00:21.40,0:00:21.56,Default,,0,0,0,,GAME {\c&H0000FFFF&\fscx108\fscy108}ALL{\c&H00FFFFFF&\fscx100\fscy100} TIME.
+Dialogue: 0,0:00:21.56,0:00:21.76,Default,,0,0,0,,GAME ALL {\c&H0000FFFF&\fscx108\fscy108}TIME.{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:21.58,0:00:21.66,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}THIS{\c&H00FFFFFF&\fscx100\fscy100} IS THE BEST
+Dialogue: 0,0:00:21.58,0:00:21.66,Default,,0,0,0,,THIS {\c&H0000FFFF&\fscx108\fscy108}IS{\c&H00FFFFFF&\fscx100\fscy100} THE BEST
+Dialogue: 0,0:00:21.58,0:00:21.66,Default,,0,0,0,,THIS IS {\c&H0000FFFF&\fscx108\fscy108}THE{\c&H00FFFFFF&\fscx100\fscy100} BEST
+Dialogue: 0,0:00:21.58,0:00:21.78,Default,,0,0,0,,THIS IS THE {\c&H0000FFFF&\fscx108\fscy108}BEST{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:21.58,0:00:21.66,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}GAME{\c&H00FFFFFF&\fscx100\fscy100} ALL TIME.
+Dialogue: 0,0:00:21.58,0:00:21.66,Default,,0,0,0,,GAME {\c&H0000FFFF&\fscx108\fscy108}ALL{\c&H00FFFFFF&\fscx100\fscy100} TIME.
+Dialogue: 0,0:00:21.64,0:00:21.84,Default,,0,0,0,,GAME ALL {\c&H0000FFFF&\fscx108\fscy108}TIME.{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:21.70,0:00:21.78,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}THAT'S{\c&H00FFFFFF&\fscx100\fscy100} IT.
+Dialogue: 0,0:00:21.70,0:00:21.96,Default,,0,0,0,,THAT'S {\c&H0000FFFF&\fscx108\fscy108}IT.{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:22.66,0:00:23.80,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}GOOD.{\c&H00FFFFFF&\fscx100\fscy100} OH,
+Dialogue: 0,0:00:23.80,0:00:24.10,Default,,0,0,0,,GOOD. {\c&H0000FFFF&\fscx108\fscy108}OH,{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:24.00,0:00:24.08,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}THAT{\c&H00FFFFFF&\fscx100\fscy100} WAS JUST CHILL
+Dialogue: 0,0:00:24.06,0:00:24.20,Default,,0,0,0,,THAT {\c&H0000FFFF&\fscx108\fscy108}WAS{\c&H00FFFFFF&\fscx100\fscy100} JUST CHILL
+Dialogue: 0,0:00:24.20,0:00:24.40,Default,,0,0,0,,THAT WAS {\c&H0000FFFF&\fscx108\fscy108}JUST{\c&H00FFFFFF&\fscx100\fscy100} CHILL
+Dialogue: 0,0:00:24.40,0:00:24.74,Default,,0,0,0,,THAT WAS JUST {\c&H0000FFFF&\fscx108\fscy108}CHILL{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:24.62,0:00:24.74,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}HERE{\c&H00FFFFFF&\fscx100\fscy100} FOR A MINUTE.
+Dialogue: 0,0:00:24.74,0:00:24.94,Default,,0,0,0,,HERE {\c&H0000FFFF&\fscx108\fscy108}FOR{\c&H00FFFFFF&\fscx100\fscy100} A MINUTE.
+Dialogue: 0,0:00:24.94,0:00:25.10,Default,,0,0,0,,HERE FOR {\c&H0000FFFF&\fscx108\fscy108}A{\c&H00FFFFFF&\fscx100\fscy100} MINUTE.
+Dialogue: 0,0:00:25.10,0:00:25.34,Default,,0,0,0,,HERE FOR A {\c&H0000FFFF&\fscx108\fscy108}MINUTE.{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:26.24,0:00:26.56,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}TYPE{\c&H00FFFFFF&\fscx100\fscy100} ONE OF THIS
+Dialogue: 0,0:00:26.56,0:00:26.74,Default,,0,0,0,,TYPE {\c&H0000FFFF&\fscx108\fscy108}ONE{\c&H00FFFFFF&\fscx100\fscy100} OF THIS
+Dialogue: 0,0:00:26.74,0:00:26.86,Default,,0,0,0,,TYPE ONE {\c&H0000FFFF&\fscx108\fscy108}OF{\c&H00FFFFFF&\fscx100\fscy100} THIS
+Dialogue: 0,0:00:26.86,0:00:27.08,Default,,0,0,0,,TYPE ONE OF {\c&H0000FFFF&\fscx108\fscy108}THIS{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:26.96,0:00:27.06,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}IS{\c&H00FFFFFF&\fscx100\fscy100} THE BEST GAME
+Dialogue: 0,0:00:27.06,0:00:27.14,Default,,0,0,0,,IS {\c&H0000FFFF&\fscx108\fscy108}THE{\c&H00FFFFFF&\fscx100\fscy100} BEST GAME
+Dialogue: 0,0:00:27.12,0:00:27.24,Default,,0,0,0,,IS THE {\c&H0000FFFF&\fscx108\fscy108}BEST{\c&H00FFFFFF&\fscx100\fscy100} GAME
+Dialogue: 0,0:00:27.24,0:00:27.52,Default,,0,0,0,,IS THE BEST {\c&H0000FFFF&\fscx108\fscy108}GAME{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:27.40,0:00:27.54,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}ALL{\c&H00FFFFFF&\fscx100\fscy100} TIME.
+Dialogue: 0,0:00:27.54,0:00:27.82,Default,,0,0,0,,ALL {\c&H0000FFFF&\fscx108\fscy108}TIME.{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:27.92,0:00:28.28,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}SHIT,{\c&H00FFFFFF&\fscx100\fscy100} SHOW.
+Dialogue: 0,0:00:28.28,0:00:28.54,Default,,0,0,0,,SHIT, {\c&H0000FFFF&\fscx108\fscy108}SHOW.{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:28.88,0:00:29.10,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}YOU{\c&H00FFFFFF&\fscx100\fscy100} WANT ME TO
+Dialogue: 0,0:00:29.10,0:00:29.20,Default,,0,0,0,,YOU {\c&H0000FFFF&\fscx108\fscy108}WANT{\c&H00FFFFFF&\fscx100\fscy100} ME TO
+Dialogue: 0,0:00:29.20,0:00:29.30,Default,,0,0,0,,YOU WANT {\c&H0000FFFF&\fscx108\fscy108}ME{\c&H00FFFFFF&\fscx100\fscy100} TO
+Dialogue: 0,0:00:29.30,0:00:29.50,Default,,0,0,0,,YOU WANT ME {\c&H0000FFFF&\fscx108\fscy108}TO{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:29.38,0:00:29.54,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}TAKE{\c&H00FFFFFF&\fscx100\fscy100} THE WHEEL?
+Dialogue: 0,0:00:29.54,0:00:29.68,Default,,0,0,0,,TAKE {\c&H0000FFFF&\fscx108\fscy108}THE{\c&H00FFFFFF&\fscx100\fscy100} WHEEL?
+Dialogue: 0,0:00:29.68,0:00:30.00,Default,,0,0,0,,TAKE THE {\c&H0000FFFF&\fscx108\fscy108}WHEEL?{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:30.26,0:00:31.04,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}WHAT?{\c&H00FFFFFF&\fscx100\fscy100} NO.
+Dialogue: 0,0:00:31.04,0:00:31.48,Default,,0,0,0,,WHAT? {\c&H0000FFFF&\fscx108\fscy108}NO.{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:32.14,0:00:33.18,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}LOOK.{\c&H00FFFFFF&\fscx100\fscy100} YOU THINK EVERYTHING
+Dialogue: 0,0:00:33.18,0:00:33.42,Default,,0,0,0,,LOOK. {\c&H0000FFFF&\fscx108\fscy108}YOU{\c&H00FFFFFF&\fscx100\fscy100} THINK EVERYTHING
+Dialogue: 0,0:00:33.42,0:00:33.56,Default,,0,0,0,,LOOK. YOU {\c&H0000FFFF&\fscx108\fscy108}THINK{\c&H00FFFFFF&\fscx100\fscy100} EVERYTHING
+Dialogue: 0,0:00:33.56,0:00:33.94,Default,,0,0,0,,LOOK. YOU THINK {\c&H0000FFFF&\fscx108\fscy108}EVERYTHING{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:33.82,0:00:34.12,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}ALWAYS{\c&H00FFFFFF&\fscx100\fscy100} GOES AS PLANNED,
+Dialogue: 0,0:00:34.12,0:00:34.30,Default,,0,0,0,,ALWAYS {\c&H0000FFFF&\fscx108\fscy108}GOES{\c&H00FFFFFF&\fscx100\fscy100} AS PLANNED,
+Dialogue: 0,0:00:34.30,0:00:34.50,Default,,0,0,0,,ALWAYS GOES {\c&H0000FFFF&\fscx108\fscy108}AS{\c&H00FFFFFF&\fscx100\fscy100} PLANNED,
+Dialogue: 0,0:00:34.50,0:00:34.90,Default,,0,0,0,,ALWAYS GOES AS {\c&H0000FFFF&\fscx108\fscy108}PLANNED,{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:34.94,0:00:35.26,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}HUH?{\c&H00FFFFFF&\fscx100\fscy100} NO,
+Dialogue: 0,0:00:35.26,0:00:35.50,Default,,0,0,0,,HUH? {\c&H0000FFFF&\fscx108\fscy108}NO,{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:35.56,0:00:35.96,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}MOMMY,{\c&H00FFFFFF&\fscx100\fscy100} NO.
+Dialogue: 0,0:00:35.96,0:00:36.28,Default,,0,0,0,,MOMMY, {\c&H0000FFFF&\fscx108\fscy108}NO.{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:36.64,0:00:36.92,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}THERE{\c&H00FFFFFF&\fscx100\fscy100} WILL ALWAYS BE
+Dialogue: 0,0:00:36.92,0:00:37.04,Default,,0,0,0,,THERE {\c&H0000FFFF&\fscx108\fscy108}WILL{\c&H00FFFFFF&\fscx100\fscy100} ALWAYS BE
+Dialogue: 0,0:00:37.04,0:00:37.28,Default,,0,0,0,,THERE WILL {\c&H0000FFFF&\fscx108\fscy108}ALWAYS{\c&H00FFFFFF&\fscx100\fscy100} BE
+Dialogue: 0,0:00:37.28,0:00:37.54,Default,,0,0,0,,THERE WILL ALWAYS {\c&H0000FFFF&\fscx108\fscy108}BE{\c&H00FFFFFF&\fscx100\fscy100}
+Dialogue: 0,0:00:37.42,0:00:37.60,Default,,0,0,0,,{\c&H0000FFFF&\fscx108\fscy108}SOME{\c&H00FFFFFF&\fscx100\fscy100} KIND OF...
+Dialogue: 0,0:00:37.60,0:00:37.78,Default,,0,0,0,,SOME {\c&H0000FFFF&\fscx108\fscy108}KIND{\c&H00FFFFFF&\fscx100\fscy100} OF...
+Dialogue: 0,0:00:37.78,0:00:38.08,Default,,0,0,0,,SOME KIND {\c&H0000FFFF&\fscx108\fscy108}OF...{\c&H00FFFFFF&\fscx100\fscy100}

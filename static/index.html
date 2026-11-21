@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Twitch Chat Spike Clipper</title>
+  <style>
+    :root {
+      --bg: #0e0e10;
+      --card: #18181b;
+      --card-elev: #1f1f23;
+      --border: #2f2f35;
+      --accent: #9147ff;
+      --accent-hover: #772ce8;
+      --spike: #ff4f6d;
+      --gold: #ffd43b;
+      --green: #00f593;
+      --text: #efeff1;
+      --muted: #adadb8;
+    }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { margin: 0; background: var(--bg); color: var(--text); padding: 24px; }
+    .container { max-width: 1180px; margin: 0 auto; }
+
+    .header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+    h1 { font-size: 24px; margin: 0 0 6px; display: flex; align-items: center; gap: 10px; }
+    .pill { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; background: rgba(145, 71, 255, 0.2); color: #bf94ff; padding: 3px 8px; border-radius: 999px; border: 1px solid rgba(145, 71, 255, 0.4); }
+    .subtitle { color: var(--muted); font-size: 14px; }
+
+    .panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 20px; }
+    .input-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    input[type="text"], input[type="number"], select {
+      background: #0e0e10; border: 1px solid var(--border); color: var(--text);
+      padding: 10px 12px; border-radius: 8px; font-size: 14px;
+    }
+    input[type="text"]:focus, input[type="number"]:focus, select:focus {
+      outline: none; border-color: var(--accent);
+    }
+    input[type="text"] { flex: 1; min-width: 260px; }
+    button {
+      background: var(--accent); color: #fff; border: none; border-radius: 8px;
+      padding: 10px 16px; font-weight: 600; font-size: 14px; cursor: pointer;
+      transition: background 0.15s ease, opacity 0.15s ease;
+    }
+    button:hover { background: var(--accent-hover); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    button.secondary { background: #26262c; border: 1px solid var(--border); color: var(--text); }
+    button.secondary:hover { background: #323239; }
+    button.batch-btn { background: linear-gradient(135deg, #9147ff, #ff4f6d); }
+    button.batch-btn:hover { opacity: 0.92; }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .field { display: flex; flex-direction: column; gap: 5px; font-size: 12px; color: var(--muted); }
+    .field input[type="number"], .field select { width: 100%; padding: 8px 10px; font-size: 13px; }
+    .toggles-row {
+      display: flex; gap: 20px; flex-wrap: wrap; margin-top: 14px; align-items: center;
+      font-size: 13px; color: var(--text);
+    }
+    .toggles-row label { display: flex; align-items: center; gap: 7px; cursor: pointer; }
+    .toggles-row input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
+
+    .status { font-size: 13px; color: #bf94ff; margin-top: 12px; }
+    .error { color: var(--spike); font-size: 13px; margin-top: 10px; font-weight: 500; }
+
+    .dashboard-top {
+      display: grid;
+      grid-template-columns: 1.55fr 1fr;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 900px) {
+      .dashboard-top { grid-template-columns: 1fr; }
+    }
+
+    .stats-bar { display: flex; gap: 18px; flex-wrap: wrap; font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+    .stats-bar strong { color: var(--text); }
+    .chart-wrap { position: relative; }
+    canvas { width: 100%; height: 185px; background: #0e0e10; border-radius: 8px; border: 1px solid var(--border); display: block; cursor: crosshair; }
+    .chart-tooltip {
+      position: absolute; pointer-events: none; background: rgba(14, 14, 16, 0.95);
+      border: 1px solid var(--accent); border-radius: 6px; padding: 6px 10px;
+      font-size: 12px; color: var(--text); display: none; z-index: 10; white-space: nowrap;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    }
+    .chart-hint { font-size: 12px; color: var(--muted); margin-top: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+
+    /* Sample Frame & Interactive Free-Size/Move Cam Box */
+    .preview-panel-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .preview-panel-header h3 { margin: 0; font-size: 14px; }
+    .frame-stage {
+      position: relative; width: 100%; aspect-ratio: 16 / 9; background: #0e0e10;
+      border-radius: 8px; border: 1px solid var(--border); overflow: hidden;
+      display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 13px;
+      user-select: none; touch-action: none;
+    }
+    .frame-stage img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+    .crop-overlay {
+      position: absolute; display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.04em;
+    }
+    .cam-box {
+      border: 2px solid var(--gold);
+      background: rgba(255, 212, 59, 0.22);
+      color: var(--gold);
+      z-index: 5;
+      text-shadow: 0 1px 3px #000;
+      pointer-events: auto;
+      cursor: move;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.65);
+    }
+    .cam-box:hover, .cam-box.active-drag {
+      background: rgba(255, 212, 59, 0.30);
+      border-color: #fff;
+    }
+    .cam-label {
+      pointer-events: none;
+      text-align: center;
+      padding: 2px 5px;
+      line-height: 1.2;
+      background: rgba(14, 14, 16, 0.6);
+      border-radius: 4px;
+    }
+    /* 8 Free-Resize Handles */
+    .resize-handle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: var(--gold);
+      border: 1.5px solid #0e0e10;
+      border-radius: 2px;
+      z-index: 6;
+    }
+    .resize-handle.nw { top: -5px; left: -5px; cursor: nwse-resize; }
+    .resize-handle.ne { top: -5px; right: -5px; cursor: nesw-resize; }
+    .resize-handle.sw { bottom: -5px; left: -5px; cursor: nesw-resize; }
+    .resize-handle.se { bottom: -5px; right: -5px; cursor: nwse-resize; }
+    .resize-handle.n  { top: -5px; left: calc(50% - 5px); cursor: ns-resize; }
+    .resize-handle.s  { bottom: -5px; left: calc(50% - 5px); cursor: ns-resize; }
+    .resize-handle.w  { top: calc(50% - 5px); left: -5px; cursor: ew-resize; }
+    .resize-handle.e  { top: calc(50% - 5px); right: -5px; cursor: ew-resize; }
+
+    .game-box {
+      border: 1.5px dashed rgba(0, 245, 147, 0.75); background: rgba(0, 245, 147, 0.05); color: var(--green);
+      z-index: 2; align-items: flex-end; padding-bottom: 6px; text-shadow: 0 1px 3px #000;
+      pointer-events: none;
+    }
+    .center-crop-box {
+      top: 0; left: 34.18%; width: 31.64%; height: 100%;
+      border: 2px solid var(--accent); background: rgba(145, 71, 255, 0.16); color: #fff;
+      z-index: 3; text-shadow: 0 1px 3px #000; pointer-events: none;
+    }
+    .cam-readout {
+      font-size: 11px; color: var(--muted); margin-top: 8px;
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    }
+    .cam-readout code { color: var(--gold); background: #0e0e10; padding: 2px 6px; border-radius: 4px; }
+
+    .clip-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 16px; }
+    .clip-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px;
+      display: flex; flex-direction: column; gap: 10px; transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .clip-card.highlight-flash {
+      border-color: var(--spike);
+      box-shadow: 0 0 0 2px rgba(255, 79, 109, 0.35);
+    }
+    .clip-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .badge { background: rgba(255, 79, 109, 0.16); color: var(--spike); padding: 3px 8px; border-radius: 6px; font-size: 12px; font-weight: 700; }
+    .chat-box { background: #0e0e10; border-radius: 8px; padding: 10px; font-size: 12px; color: var(--muted); max-height: 92px; overflow-y: auto; line-height: 1.45; }
+    .chat-box div { margin-bottom: 3px; }
+    .time-inputs { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+    .time-inputs input { width: 76px; padding: 6px 8px; font-size: 12px; }
+    .dur-pill { margin-left: auto; background: #26262c; padding: 3px 8px; border-radius: 6px; color: var(--text); font-weight: 600; }
+
+    .export-item {
+      background: var(--card-elev); border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-top: 8px;
+    }
+    .export-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+    .tag { font-size: 11px; background: #2a2a32; color: var(--text); padding: 2px 7px; border-radius: 5px; }
+    .export-item video { width: 100%; max-height: 360px; background: #000; border-radius: 6px; display: block; }
+    .qc-link { display: block; margin-top: 8px; }
+    .qc-link img { width: 100%; border-radius: 6px; border: 1px solid var(--border); display: block; }
+    .qc-caption { font-size: 11px; color: var(--muted); margin-top: 4px; text-align: right; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <h1>Twitch Chat Spike Clipper <span class="pill">v2 Pipeline</span></h1>
+        <div class="subtitle">Paste a Twitch VOD link → compensate chat delay → free-size webcam crop → karaoke captions &amp; export.</div>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <select id="historySelect" onchange="loadFromHistory(this.value)" style="min-width:240px;">
+          <option value="">Recent Cached VODs...</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="input-row">
+        <input id="vodUrl" type="text" placeholder="https://www.twitch.tv/videos/2345678901" />
+        <button id="scanBtn" onclick="analyzeVod()">Scan Chat Spikes</button>
+        <button id="batchBtn" class="batch-btn" onclick="exportTopThree()" style="display:none;">Export Top 3 Spikes</button>
+      </div>
+
+      <div class="controls-grid">
+        <div class="field">
+          <label for="zThresh">Spike Sensitivity (Z-Score)</label>
+          <input id="zThresh" type="number" step="0.2" min="1.2" max="5.0" value="2.2" />
+        </div>
+        <div class="field">
+          <label for="chatDelay">Chat Delay Offset (sec)</label>
+          <input id="chatDelay" type="number" step="1" min="-25" max="10" value="-7" />
+        </div>
+        <div class="field">
+          <label for="prePad">Lead-in (sec)</label>
+          <input id="prePad" type="number" min="4" max="60" value="18" />
+        </div>
+        <div class="field">
+          <label for="postPad">Aftermath (sec)</label>
+          <input id="postPad" type="number" min="4" max="60" value="10" />
+        </div>
+        <div class="field">
+          <label for="layout">Export Format</label>
+          <select id="layout" onchange="updateOverlayPreview()">
+            <option value="16:9">16:9 Original</option>
+            <option value="9:16-split" selected>9:16 Stacked Cam + Gameplay</option>
+            <option value="9:16-crop">9:16 Vertical Center Crop</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="camCorner">Cam Preset / Freeform</label>
+          <select id="camCorner" onchange="applyCamPreset(this.value)">
+            <option value="bottom-left" selected>Bottom-Left</option>
+            <option value="top-left">Top-Left</option>
+            <option value="bottom-right">Bottom-Right</option>
+            <option value="top-right">Top-Right</option>
+            <option value="custom">Custom (Freeform)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="toggles-row">
+        <label>
+          <input id="captions" type="checkbox" checked /> Burn Word-by-Word Captions (Whisper .ASS)
+        </label>
+        <label>
+          <input id="normalizeAudio" type="checkbox" checked /> Normalize Audio (-14 LUFS)
+        </label>
+      </div>
+
+      <div id="statusMsg" class="status"></div>
+      <div id="errorMsg" class="error"></div>
+    </div>
+
+    <div id="resultsSection" style="display:none;">
+      <div class="dashboard-top">
+        <div class="panel" style="margin-bottom:0;">
+          <div class="stats-bar" id="statsBar"></div>
+          <div class="chart-wrap">
+            <canvas id="spikeChart" width="700" height="185"></canvas>
+            <div id="chartTooltip" class="chart-tooltip"></div>
+          </div>
+          <div class="chart-hint">
+            <span>Hover timeline to inspect chat velocity · Click any red spike band to jump to clip</span>
+            <span id="delayReadout"></span>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-bottom:0;">
+          <div class="preview-panel-header">
+            <h3>Reframe &amp; Freeform Cam Box</h3>
+            <button id="grabFrameBtn" class="secondary" style="padding:6px 12px; font-size:12px;" onclick="grabSampleFrame()">Grab Sample Frame</button>
+          </div>
+          <div class="frame-stage" id="frameStage">
+            <span id="framePlaceholder" style="z-index:1; text-align:center; padding:0 16px;">Drag &amp; resize the yellow WEBCAM box freely · Click "Grab Sample Frame" to load VOD image</span>
+            <img id="previewImg" src="" alt="VOD Sample Frame" style="display:none;" />
+            <div id="overlayCam" class="crop-overlay cam-box" style="display:none;">
+              <span class="cam-label" id="camBoxLabel">WEBCAM</span>
+              <div class="resize-handle nw" data-dir="nw"></div>
+              <div class="resize-handle ne" data-dir="ne"></div>
+              <div class="resize-handle sw" data-dir="sw"></div>
+              <div class="resize-handle se" data-dir="se"></div>
+              <div class="resize-handle n" data-dir="n"></div>
+              <div class="resize-handle s" data-dir="s"></div>
+              <div class="resize-handle w" data-dir="w"></div>
+              <div class="resize-handle e" data-dir="e"></div>
+            </div>
+            <div id="overlayGame" class="crop-overlay game-box" style="display:none;">GAMEPLAY</div>
+            <div id="overlayCenter" class="crop-overlay center-crop-box" style="display:none;">9:16 CROP</div>
+          </div>
+          <div class="cam-readout" id="camReadoutRow">
+            <span>Drag box to move · Drag corners/edges to resize</span>
+            <code id="camCoordsText">X:0% Y:70% · 26×30%</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="clip-grid" id="clipGrid"></div>
+    </div>
+  </div>
+
+  <script>
+    let currentManifest = null;
+    let hoverSec = null;
+    let batchRunning = false;
+
+    const CAM_PRESETS = {
+      "bottom-left":  { x: 0.00, y: 0.70, w: 0.26, h: 0.30 },
+      "top-left":     { x: 0.00, y: 0.00, w: 0.26, h: 0.30 },
+      "bottom-right": { x: 0.74, y: 0.70, w: 0.26, h: 0.30 },
+      "top-right":    { x: 0.74, y: 0.00, w: 0.26, h: 0.30 },
+    };
+
+    // Normalized [0..1] freeform webcam crop rectangle
+    let camRect = { ...CAM_PRESETS["bottom-left"] };
+
+    function clampCamRect(r) {
+      const w = Math.max(0.05, Math.min(0.996, Number(r.w) || 0.26));
+      const h = Math.max(0.05, Math.min(0.996, Number(r.h) || 0.30));
+      const x = Math.max(0.0, Math.min(0.998 - w, Number(r.x) || 0));
+      const y = Math.max(0.0, Math.min(0.998 - h, Number(r.y) || 0));
+      return {
+        x: Math.round(x * 10000) / 10000,
+        y: Math.round(y * 10000) / 10000,
+        w: Math.round(w * 10000) / 10000,
+        h: Math.round(h * 10000) / 10000,
+      };
+    }
+
+    function applyCamPreset(presetKey) {
+      if (CAM_PRESETS[presetKey]) {
+        camRect = { ...CAM_PRESETS[presetKey] };
+        updateOverlayPreview();
+      }
+    }
+
+    function detectMatchingPreset(r) {
+      for (const [key, p] of Object.entries(CAM_PRESETS)) {
+        if (
+          Math.abs(r.x - p.x) < 0.008 &&
+          Math.abs(r.y - p.y) < 0.008 &&
+          Math.abs(r.w - p.w) < 0.008 &&
+          Math.abs(r.h - p.h) < 0.008
+        ) {
+          return key;
+        }
+      }
+      return "custom";
+    }
+
+    function fmtTime(sec) {
+      sec = Math.max(0, Math.floor(Number(sec) || 0));
+      const h = String(Math.floor(sec / 3600)).padStart(2, "0");
+      const m = String(Math.floor((sec % 3600) / 60)).padStart(2, "0");
+      const s = String(sec % 60).padStart(2, "0");
+      return `${h}:${m}:${s}`;
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, m => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[m]));
+    }
+
+    async function refreshHistoryDropdown(selectedVodId = "") {
+      try {
+        const res = await fetch("/api/history");
+        const data = await res.json();
+        const sel = document.getElementById("historySelect");
+        const items = data.history || [];
+        sel.innerHTML = `<option value="">Recent Cached VODs (${items.length})...</option>` +
+          items.map(item =>
+            `<option value="${item.vod_id}" ${item.vod_id === selectedVodId ? "selected" : ""}>` +
+            `VOD ${item.vod_id} · ${item.duration_label} (${item.clip_count} clips)</option>`
+          ).join("");
+      } catch (e) {
+        console.warn("Failed to load VOD history:", e);
+      }
+    }
+
+    async function loadFromHistory(vodId) {
+      if (!vodId) return;
+      const status = document.getElementById("statusMsg");
+      const err = document.getElementById("errorMsg");
+      err.textContent = "";
+      status.textContent = `Loading cached manifest for VOD ${vodId}...`;
+
+      try {
+        const res = await fetch(`/api/manifest/${vodId}`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Failed to load manifest");
+
+        document.getElementById("vodUrl").value = data.vod_url || `https://www.twitch.tv/videos/${vodId}`;
+        if (typeof data.z_threshold === "number") document.getElementById("zThresh").value = data.z_threshold;
+        if (typeof data.chat_delay_sec === "number") document.getElementById("chatDelay").value = data.chat_delay_sec;
+        if (typeof data.pre_pad === "number") document.getElementById("prePad").value = data.pre_pad;
+        if (typeof data.post_pad === "number") document.getElementById("postPad").value = data.post_pad;
+        if (data.cam_rect) {
+          camRect = clampCamRect(data.cam_rect);
+          document.getElementById("camCorner").value = detectMatchingPreset(camRect);
+        }
+
+        currentManifest = data;
+        status.textContent = `Loaded VOD ${data.vod_id} (${data.clips.length} spikes across ${data.total_messages.toLocaleString()} messages).`;
+        renderDashboard(data);
+      } catch (e) {
+        err.textContent = e.message;
+        status.textContent = "";
+      }
+    }
+
+    async function analyzeVod() {
+      const vodUrl = document.getElementById("vodUrl").value.trim();
+      if (!vodUrl) return;
+
+      const btn = document.getElementById("scanBtn");
+      const status = document.getElementById("statusMsg");
+      const err = document.getElementById("errorMsg");
+      btn.disabled = true;
+      err.textContent = "";
+      status.textContent = "Downloading chat replay & scanning for velocity spikes...";
+
+      try {
+        const res = await fetch("/api/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            vod_url: vodUrl,
+            z_threshold: parseFloat(document.getElementById("zThresh").value),
+            chat_delay_sec: parseFloat(document.getElementById("chatDelay").value),
+            pre_pad: parseInt(document.getElementById("prePad").value, 10),
+            post_pad: parseInt(document.getElementById("postPad").value, 10),
+            max_clips: 12,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Failed to analyze VOD");
+
+        if (data.cam_rect) {
+          camRect = clampCamRect(data.cam_rect);
+          document.getElementById("camCorner").value = detectMatchingPreset(camRect);
+        }
+
+        currentManifest = data;
+        status.textContent = `Found ${data.clips.length} chat spike highlights across ${data.total_messages.toLocaleString()} messages.`;
+        renderDashboard(data);
+        await refreshHistoryDropdown(data.vod_id);
+      } catch (e) {
+        err.textContent = e.message;
+        status.textContent = "";
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function renderDashboard(data) {
+      document.getElementById("resultsSection").style.display = "block";
+      document.getElementById("batchBtn").style.display = data.clips.length ? "inline-block" : "none";
+
+      document.getElementById("statsBar").innerHTML = `
+        <span>VOD ID: <strong>${escapeHtml(data.vod_id)}</strong></span>
+        <span>Duration: <strong>${escapeHtml(data.duration_label)}</strong></span>
+        <span>Messages: <strong>${data.total_messages.toLocaleString()}</strong></span>
+        <span>Spikes: <strong>${data.clips.length}</strong></span>
+      `;
+      document.getElementById("delayReadout").textContent = `Chat shift: ${data.chat_delay_sec ?? -7}s`;
+
+      const img = document.getElementById("previewImg");
+      const placeholder = document.getElementById("framePlaceholder");
+      if (data.preview_url) {
+        img.src = data.preview_url;
+        img.style.display = "block";
+        placeholder.style.display = "none";
+      } else {
+        img.style.display = "none";
+        placeholder.style.display = "block";
+      }
+
+      updateOverlayPreview();
+      drawChart();
+      renderClips(data.clips);
+    }
+
+    function updateOverlayPreview() {
+      const layout = document.getElementById("layout").value;
+      const camSelect = document.getElementById("camCorner");
+      const readoutRow = document.getElementById("camReadoutRow");
+      camSelect.disabled = layout !== "9:16-split";
+
+      const ovCam = document.getElementById("overlayCam");
+      const ovGame = document.getElementById("overlayGame");
+      const ovCenter = document.getElementById("overlayCenter");
+
+      ovCam.style.display = "none";
+      ovGame.style.display = "none";
+      ovCenter.style.display = "none";
+      readoutRow.style.visibility = layout === "9:16-split" ? "visible" : "hidden";
+
+      if (layout === "9:16-split") {
+        ovCam.style.display = "flex";
+        ovGame.style.display = "flex";
+
+        ovCam.style.left = `${(camRect.x * 100).toFixed(2)}%`;
+        ovCam.style.top = `${(camRect.y * 100).toFixed(2)}%`;
+        ovCam.style.width = `${(camRect.w * 100).toFixed(2)}%`;
+        ovCam.style.height = `${(camRect.h * 100).toFixed(2)}%`;
+
+        const wPct = Math.round(camRect.w * 100);
+        const hPct = Math.round(camRect.h * 100);
+        const xPct = Math.round(camRect.x * 100);
+        const yPct = Math.round(camRect.y * 100);
+
+        document.getElementById("camBoxLabel").textContent = `WEBCAM (${wPct}×${hPct}%)`;
+        document.getElementById("camCoordsText").textContent = `X:${xPct}% Y:${yPct}% · ${wPct}×${hPct}%`;
+
+        ovGame.style.top = "0";
+        ovGame.style.left = "26.65%";
+        ovGame.style.width = "46.7%";
+        ovGame.style.height = "100%";
+      } else if (layout === "9:16-crop") {
+        ovCenter.style.display = "flex";
+      }
+    }
+
+    // Free-Move & Free-Resize Interaction for #overlayCam
+    (function initFreeCamInteraction() {
+      const stage = document.getElementById("frameStage");
+      const camBox = document.getElementById("overlayCam");
+      let dragState = null;
+
+      camBox.addEventListener("pointerdown", (e) => {
+        if (document.getElementById("layout").value !== "9:16-split") return;
+        e.preventDefault();
+        e.stopPropagation();
+
+        const handleDir = e.target.dataset ? e.target.dataset.dir : null;
+        dragState = {
+          mode: handleDir ? "resize" : "move",
+          dir: handleDir,
+          startClientX: e.clientX,
+          startClientY: e.clientY,
+          startRect: { ...camRect },
+        };
+        camBox.classList.add("active-drag");
+        camBox.setPointerCapture(e.pointerId);
+      });
+
+      camBox.addEventListener("pointermove", (e) => {
+        if (!dragState) return;
+        const stageBounds = stage.getBoundingClientRect();
+        if (stageBounds.width <= 0 || stageBounds.height <= 0) return;
+
+        const dx = (e.clientX - dragState.startClientX) / stageBounds.width;
+        const dy = (e.clientY - dragState.startClientY) / stageBounds.height;
+        const s = dragState.startRect;
+        const minSize = 0.06;
+
+        if (dragState.mode === "move") {
+          camRect = clampCamRect({
+            x: s.x + dx,
+            y: s.y + dy,
+            w: s.w,
+            h: s.h,
+          });
+        } else {
+          let left = s.x;
+          let top = s.y;
+          let right = s.x + s.w;
+          let bottom = s.y + s.h;
+          const dir = dragState.dir;
+
+          if (dir.includes("w")) {
+            left = Math.max(0.0, Math.min(right - minSize, s.x + dx));
+          }
+          if (dir.includes("e")) {
+            right = Math.min(0.998, Math.max(left + minSize, s.x + s.w + dx));
+          }
+          if (dir.includes("n")) {
+            top = Math.max(0.0, Math.min(bottom - minSize, s.y + dy));
+          }
+          if (dir.includes("s")) {
+            bottom = Math.min(0.998, Math.max(top + minSize, s.y + s.h + dy));
+          }
+
+          camRect = clampCamRect({
+            x: left,
+            y: top,
+            w: right - left,
+            h: bottom - top,
+          });
+        }
+
+        document.getElementById("camCorner").value = detectMatchingPreset(camRect);
+        updateOverlayPreview();
+      });
+
+      const endDrag = (e) => {
+        if (!dragState) return;
+        dragState = null;
+        camBox.classList.remove("active-drag");
+        try {
+          camBox.releasePointerCapture(e.pointerId);
+        } catch (_) {}
+      };
+
+      camBox.addEventListener("pointerup", endDrag);
+      camBox.addEventListener("pointercancel", endDrag);
+    })();
+
+    async function grabSampleFrame() {
+      if (!currentManifest) return;
+      const btn = document.getElementById("grabFrameBtn");
+      const err = document.getElementById("errorMsg");
+      btn.disabled = true;
+      btn.textContent = "Grabbing frame...";
+      err.textContent = "";
+
+      try {
+        const res = await fetch("/api/preview-frame", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ vod_id: currentManifest.vod_id }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Failed to grab preview frame");
+
+        currentManifest.preview_url = data.preview_url;
+        const img = document.getElementById("previewImg");
+        img.src = data.preview_url;
+        img.style.display = "block";
+        document.getElementById("framePlaceholder").style.display = "none";
+        updateOverlayPreview();
+      } catch (e) {
+        err.textContent = e.message;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Grab Sample Frame";
+      }
+    }
+
+    function drawChart() {
+      if (!currentManifest) return;
+      const timeline = currentManifest.timeline || [];
+      const clips = currentManifest.clips || [];
+      const totalDur = Math.max(1, currentManifest.duration_sec || 1);
+
+      const canvas = document.getElementById("spikeChart");
+      const ctx = canvas.getContext("2d");
+      const W = canvas.width;
+      const H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+      if (!timeline.length) return;
+
+      const maxMps = Math.max(...timeline.map(p => p.mps), 1);
+
+      clips.forEach(c => {
+        const x1 = (c.start_sec / totalDur) * W;
+        const x2 = (c.end_sec / totalDur) * W;
+        ctx.fillStyle = "rgba(255, 79, 109, 0.20)";
+        ctx.fillRect(x1, 0, Math.max(5, x2 - x1), H);
+      });
+
+      ctx.beginPath();
+      ctx.strokeStyle = "#9147ff";
+      ctx.lineWidth = 2;
+      timeline.forEach((pt, idx) => {
+        const x = (pt.sec / totalDur) * W;
+        const y = H - 16 - ((pt.mps / maxMps) * (H - 34));
+        if (idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+
+      ctx.fillStyle = "#ff4f6d";
+      clips.forEach(c => {
+        const x = (c.peak_sec / totalDur) * W;
+        ctx.beginPath();
+        ctx.arc(x, 14, 4, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      if (hoverSec !== null) {
+        const hx = (hoverSec / totalDur) * W;
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.45)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(hx, 0);
+        ctx.lineTo(hx, H);
+        ctx.stroke();
+      }
+    }
+
+    (function initCanvasEvents() {
+      const canvas = document.getElementById("spikeChart");
+      const tooltip = document.getElementById("chartTooltip");
+
+      canvas.addEventListener("mousemove", (e) => {
+        if (!currentManifest || !currentManifest.timeline.length) return;
+        const rect = canvas.getBoundingClientRect();
+        const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        const totalDur = Math.max(1, currentManifest.duration_sec);
+        hoverSec = ratio * totalDur;
+
+        const tl = currentManifest.timeline;
+        let nearest = tl[0];
+        let bestDiff = Math.abs(tl[0].sec - hoverSec);
+        for (let i = 1; i < tl.length; i++) {
+          const diff = Math.abs(tl[i].sec - hoverSec);
+          if (diff < bestDiff) {
+            bestDiff = diff;
+            nearest = tl[i];
+          }
+        }
+
+        tooltip.style.display = "block";
+        tooltip.textContent = `${fmtTime(hoverSec)} · ${nearest.mps} msg/s · Z=${nearest.z}`;
+        const tipX = Math.min(rect.width - 175, Math.max(8, (e.clientX - rect.left) + 10));
+        tooltip.style.left = `${tipX}px`;
+        tooltip.style.top = "10px";
+        drawChart();
+      });
+
+      canvas.addEventListener("mouseleave", () => {
+        hoverSec = null;
+        tooltip.style.display = "none";
+        drawChart();
+      });
+
+      canvas.addEventListener("click", (e) => {
+        if (!currentManifest || !currentManifest.clips.length) return;
+        const rect = canvas.getBoundingClientRect();
+        const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        const clickedSec = ratio * currentManifest.duration_sec;
+
+        let targetClip = currentManifest.clips.find(
+          c => clickedSec >= c.start_sec - 15 && clickedSec <= c.end_sec + 15
+        );
+        if (!targetClip) {
+          targetClip = currentManifest.clips.reduce((best, c) =>
+            Math.abs(c.peak_sec - clickedSec) < Math.abs(best.peak_sec - clickedSec) ? c : best
+          );
+        }
+
+        const card = document.getElementById(`card-${targetClip.id}`);
+        if (card) {
+          card.scrollIntoView({ behavior: "smooth", block: "center" });
+          card.classList.remove("highlight-flash");
+          void card.offsetWidth;
+          card.classList.add("highlight-flash");
+        }
+      });
+    })();
+
+    function renderExportsHtml(exportsList) {
+      if (!exportsList || !exportsList.length) return "";
+      return exportsList.map(exp => `
+        <div class="export-item">
+          <div class="export-tags">
+            <span class="tag">${escapeHtml(exp.layout)}</span>
+            ${exp.layout === "9:16-split" ? `<span class="tag">Cam ${escapeHtml(exp.cam_label || exp.cam_corner)}</span>` : ""}
+            ${exp.captioned ? `<span class="tag" style="color:#ffd43b;">Karaoke .ASS</span>` : ""}
+            ${exp.normalized ? `<span class="tag" style="color:#00f593;">-14 LUFS</span>` : ""}
+          </div>
+          <video controls preload="metadata" src="${exp.video_url}"></video>
+          <div style="margin-top:8px; display:flex; gap:8px;">
+            <a href="${exp.video_url}" download="${escapeHtml(exp.filename)}" style="flex:1; text-decoration:none;">
+              <button class="secondary" style="width:100%; padding:8px 12px; font-size:12px;">Download ${escapeHtml(exp.filename)}</button>
+            </a>
+          </div>
+          ${exp.contact_url ? `
+            <a class="qc-link" href="${exp.contact_url}" target="_blank" title="Open full-resolution 8-frame QC contact sheet">
+              <img src="${exp.contact_url}" alt="QC Contact Sheet" />
+              <div class="qc-caption">8-Frame QC Contact Sheet (click to enlarge)</div>
+            </a>
+          ` : ""}
+        </div>
+      `).join("");
+    }
+
+    function updateClipDuration(clipId) {
+      const s = parseFloat(document.getElementById(`start-${clipId}`).value) || 0;
+      const e = parseFloat(document.getElementById(`end-${clipId}`).value) || 0;
+      const dur = Math.max(0, e - s).toFixed(1);
+      document.getElementById(`dur-${clipId}`).textContent = `${dur}s`;
+    }
+
+    function renderClips(clips) {
+      const grid = document.getElementById("clipGrid");
+      grid.innerHTML = clips.map(c => `
+        <div class="clip-card" id="card-${c.id}">
+          <div class="clip-header">
+            <strong>#${c.rank} · Chat Peak @ ${fmtTime(c.peak_sec)}</strong>
+            <span class="badge">${c.peak_msgs_per_sec} msg/s · Z=${c.z_score}</span>
+          </div>
+
+          <div class="chat-box">
+            ${c.sample_messages && c.sample_messages.length
+              ? c.sample_messages.map(m => `<div>${escapeHtml(m)}</div>`).join("")
+              : "<div>(High chat velocity spike)</div>"}
+          </div>
+
+          <div class="time-inputs">
+            <span>Start:</span>
+            <input type="number" id="start-${c.id}" value="${c.start_sec}" step="0.5" oninput="updateClipDuration('${c.id}')" />
+            <span>End:</span>
+            <input type="number" id="end-${c.id}" value="${c.end_sec}" step="0.5" oninput="updateClipDuration('${c.id}')" />
+            <span class="dur-pill" id="dur-${c.id}">${(c.end_sec - c.start_sec).toFixed(1)}s</span>
+          </div>
+
+          <button id="btn-${c.id}" onclick="exportClip('${c.id}')">Clip &amp; Export MP4</button>
+          <div class="error" id="err-${c.id}" style="margin-top:0;"></div>
+          <div id="exports-${c.id}">${renderExportsHtml(c.exports)}</div>
+        </div>
+      `).join("");
+    }
+
+    async function exportClip(clipId, progressLabel = null) {
+      if (!currentManifest) return false;
+      const btn = document.getElementById(`btn-${clipId}`);
+      const errBox = document.getElementById(`err-${clipId}`);
+      const exportsBox = document.getElementById(`exports-${clipId}`);
+      const startSec = parseFloat(document.getElementById(`start-${clipId}`).value);
+      const endSec = parseFloat(document.getElementById(`end-${clipId}`).value);
+
+      btn.disabled = true;
+      btn.textContent = progressLabel || "Slicing, reframing & rendering...";
+      errBox.textContent = "";
+
+      try {
+        const res = await fetch("/api/export", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            vod_id: currentManifest.vod_id,
+            clip_id: clipId,
+            start_sec: startSec,
+            end_sec: endSec,
+            layout: document.getElementById("layout").value,
+            cam_corner: document.getElementById("camCorner").value,
+            cam_rect: camRect,
+            burn_captions: document.getElementById("captions").checked,
+            normalize_audio: document.getElementById("normalizeAudio").checked,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Export failed");
+
+        const clipObj = currentManifest.clips.find(c => c.id === clipId);
+        if (clipObj) {
+          clipObj.exports = data.exports || [data];
+        }
+        exportsBox.innerHTML = renderExportsHtml(data.exports || [data]);
+        btn.textContent = "Export Another Variant";
+        return true;
+      } catch (e) {
+        errBox.textContent = e.message;
+        btn.textContent = "Retry Export";
+        return false;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function exportTopThree() {
+      if (!currentManifest || !currentManifest.clips.length || batchRunning) return;
+      batchRunning = true;
+      const batchBtn = document.getElementById("batchBtn");
+      const status = document.getElementById("statusMsg");
+      batchBtn.disabled = true;
+
+      const targets = currentManifest.clips.slice(0, 3);
+      for (let i = 0; i < targets.length; i++) {
+        const clip = targets[i];
+        batchBtn.textContent = `Batch Exporting (${i + 1}/${targets.length})...`;
+        status.textContent = `Batch exporting #${clip.rank} (${clip.id}) — ${i + 1} of ${targets.length}...`;
+        await exportClip(clip.id, `Rendering (${i + 1}/${targets.length})...`);
+      }
+
+      status.textContent = `Completed batch export of top ${targets.length} spike highlights.`;
+      batchBtn.textContent = "Export Top 3 Spikes";
+      batchBtn.disabled = false;
+      batchRunning = false;
+    }
+
+    refreshHistoryDropdown();
+    updateOverlayPreview();
+  </script>
+</body>
+</html>
